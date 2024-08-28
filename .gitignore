@@ -1,0 +1,83 @@
+# Build results
+bin/
+obj/
+
+# Visual Studio 2019/2022
+.vs/
+.vscode/
+.idea/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Auto-generated files
+*.pidb
+*.booproj
+*.log
+*.tlog
+*.log2
+*.svclog
+*.userprefs
+
+# Visual Studio Code
+.vscode/
+
+# Rider
+.idea/
+*.sln.iml
+
+# DotNet/Mono
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# Resharper
+_ReSharper*/
+*.[rR]e[Ss]harper
+
+# Microsoft Visual Studio Code
+.history/
+.vscode/
+.vs/
+
+# Text Templating
+*.tt
+*.tt2
+*.txt4
+*.txt3
+
+# Coverlet coverage
+coverage/
+
+# nCrunch
+*.ncrunchsolution
+*.ncrunchproject
+
+# Web workspaces
+website/.vs/
+node_modules/
+bower_components/
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# Backup folders
+**/Backup*/
+
+# Logs
+*.log
+
+# Package directories
+*.nuget/
+*.node_modules/
+*.bcr/
