@@ -6,6 +6,16 @@ using System.Runtime.CompilerServices;
 
 namespace Avoniath
 {
+    class Program
+    {
+        static void Main()
+        {
+            Game.StartGame();
+            Console.ReadKey();
+
+        }
+    }
+
     class Game
     {
         static string characterName = "";
@@ -74,15 +84,7 @@ namespace Avoniath
 
             }
         }
-        class Program
-        {
-            static void Main()
-            {
-                Game.StartGame();
-                Console.ReadKey();
-
-            }
-        }
+       
     }
 }
 
