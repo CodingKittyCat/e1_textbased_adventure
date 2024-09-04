@@ -20,6 +20,14 @@ namespace e1_textbased_adventure
                 new Choice("Choice 2", 1.2f)
             }));
 
+            story.Add(1.1f, new Scene("Story 1.1",
+
+            new List<Choice>
+            {
+                new Choice("Choice 1", 1.3f),
+                new Choice("Choice 2", 1.4f)
+            }));
+
             return story;
         }
 
@@ -41,9 +49,10 @@ namespace e1_textbased_adventure
         public string Option { get; }
         public float NextScene { get; }
 
-        public Choice(string option, float nextScene) 
+        public Choice(string option, float nextScene)
         {
             Option = option;
-            NextScene = nextScene;  
+            NextScene = nextScene;
         }
+    }
 }

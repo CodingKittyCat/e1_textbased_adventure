@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,8 +13,11 @@ namespace e1_textbased_adventure
         static string characterName = "";
         float currentScene = 1.0f;
         Dictionary<float, Scene> story = new Dictionary<float, Scene>();
+        public Game()
+        {
+            StoryInitialize();
+        }
        
-
         public static void StartGame()
         {
             Console.WriteLine("Welcome to the whimsical region of Avoniath!\nA text-based adventure game set in a medieval world where magic is banished from the kingdom.\nYou're a talented sorcerer, aiming to assassinate the king to end his tyranny and bring magic back to the realm.\n");
@@ -31,15 +35,15 @@ namespace e1_textbased_adventure
                 Console.WriteLine($"Your sorcerer's name is now {characterName}");
             }
 
-
-            
-
             static void MakeMenuChoice(string input)
             {
                 if (input == "1")
                 {
                     Console.Clear();
                     NameCharacter();
+
+                    Game gameInstance = new Game();
+                    gameInstance.StartAdventure();
                     // Create Save File
                 }
                 else if (input == "2")
@@ -64,6 +68,16 @@ namespace e1_textbased_adventure
 
         }
 
+        public void StartAdventure()
+        {
+            while (true)
+            {
+                DisplayScene();
+                float choice = GetPlayerChoice();
+                UpdateScene(choice);
+            }
+        }
+
         private void StoryInitialize()
         {
             InitializeStory storyInitializer = new InitializeStory();
@@ -79,7 +93,7 @@ namespace e1_textbased_adventure
                 Dialog(character, "blue");
                 Thread.Sleep(60);
             }
-            Console.WriteLine("/n ");
+            Console.WriteLine("\n ");
             int choiceIndex = 0;
 
             foreach (Choice choice in story[currentScene].Choices)
@@ -90,7 +104,7 @@ namespace e1_textbased_adventure
         }
         float GetPlayerChoice()
         {
-            Console.Write("/nEnter your choice: ");
+            Console.Write("\nEnter your choice: ");
             int choiceIndex;
 
             while (!int.TryParse(Console.ReadLine(), out choiceIndex) || choiceIndex < 1 || choiceIndex > story[currentScene].Choices.Count)
