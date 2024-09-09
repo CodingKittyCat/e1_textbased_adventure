@@ -1,71 +1,85 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
+using System.Threading;
 
 namespace e1_textbased_adventure
 {
     class Game
     {
-        static string characterName = "";
-        float currentScene = 1.0f;
+        List<string> commands = new List<string>();
         Dictionary<float, Scene> story = new Dictionary<float, Scene>();
+
+        string characterName = "";
+        float currentScene = 1.0f;
+
         public Game()
         {
             StoryInitialize();
+            commands.Add("save-game");
+            commands.Add("help");
         }
-       
-        public static void StartGame()
-        {
-            Console.WriteLine("Welcome to the whimsical region of Avoniath!\nA text-based adventure game set in a medieval world where magic is banished from the kingdom.\nYou're a talented sorcerer, aiming to assassinate the king to end his tyranny and bring magic back to the realm.\n");
-            Console.WriteLine("1. New Game");
-            Console.WriteLine("2. Load Game");
-            Console.WriteLine("3. Credits");
-            Console.WriteLine("4. Exit");
-            string input = Console.ReadLine();
-            MakeMenuChoice(input);
 
-            static void NameCharacter()
+        public void StartGame()
+        {
+            while(true)
+            { 
+                Dialog("Welcome to the whimsical region of Avoniath!\nA text-based adventure game set in a medieval world where magic is banished from the kingdom.\nYou're a talented sorcerer, aiming to assassinate the king to end his tyranny and bring magic back to the realm.\n", "blue");
+                Dialog("       _                        \r\n       \\`*-.                    \r\n        )  _`-.                 \r\n       .  : `. .                \r\n       : _   '  \\               \r\n       ; *` _.   `*-._          \r\n       `-.-'          `-.       \r\n         ;       `       `.     \r\n         :.       .        \\    \r\n         . \\  .   :   .-'   .   \r\n         '  `+.;  ;  '      :   \r\n         :  '  |    ;       ;-. \r\n         ; '   : :`-:     _.`* ;\r\n      .*' /  .*' ; .*`- +'  `*' \r\n      `*-*   `*-*  `*-*'\n", "cyan");
+                Console.WriteLine("1. New Game");
+                Console.WriteLine("2. Load Game");
+                Console.WriteLine("3. Credits");
+                Console.WriteLine("4. Exit");
+                string input = Console.ReadLine();
+                Console.Clear();
+                MakeMenuChoice(input);
+
+            }
+        }
+
+        void NameCharacter()
+        {
+            while (true)
             {
+                if (characterName == null || characterName == "")
+                {
                 Dialog("You wouldn't be much of a sorcerer without a proper name, would you? Try to think of a fun name or title!", "blue");
                 characterName = Console.ReadLine();
-                Console.WriteLine($"Your sorcerer's name is now {characterName}");
+
+                }
+                else 
+                {
+                    Console.WriteLine($"Your sorcerer's name is now {characterName}\nPress any key to continue...");
+                    Console.ReadKey();
+                    return;
+                }
             }
 
-            static void MakeMenuChoice(string input)
+        }
+
+        void MakeMenuChoice(string input)
+        {
+            if (input == "1")
             {
-                if (input == "1")
-                {
-                    Console.Clear();
-                    NameCharacter();
+                Console.Clear();
+                NameCharacter();
 
-                    Game gameInstance = new Game();
-                    gameInstance.StartAdventure();
-                    // Create Save File
-                }
-                else if (input == "2")
-                {
-                    // If save file exists, load game
-                    Console.WriteLine("Load");
-                }
-
-                else if (input == "3")
-                {
-                    // Credits
-                    Console.WriteLine("Creds");
-                }
-
-                else if (input == "4")
-                {
-                    Console.Clear();
-                    Dialog("See you next time!", "red");
-                    System.Environment.Exit(1);
-                }
+                StartAdventure();
             }
-
+            else if (input == "2")
+            {
+                LoadGame();
+            }
+            else if (input == "3")
+            {
+                Console.WriteLine("Creds");
+            }
+            else if (input == "4")
+            {
+                Console.Clear();
+                Dialog("                          See you next time! \n\n" + "                      /^--^\\     /^--^\\     /^--^\\\r\n                      \\____/     \\____/     \\____/\r\n                     /      \\   /      \\   /      \\\r\n                    |        | |        | |        |\r\n                     \\__  __/   \\__  __/   \\__  __/\r\n|^|^|^|^|^|^|^|^|^|^|^|^\\ \\^|^|^|^/ /^|^|^|^|^\\ \\^|^|^|^|^|^|^|^|^|^|^|^|\r\n| | | | | | | | | | | | |\\ \\| | |/ /| | | | | | \\ \\ | | | | | | | | | | |\r\n########################/ /######\\ \\###########/ /#######################\r\n| | | | | | | | | | | | \\/| | | | \\/| | | | | |\\/ | | | | | | | | | | | |\r\n|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|", "red");
+                Environment.Exit(1);
+            }
         }
 
         public void StartAdventure()
@@ -73,8 +87,8 @@ namespace e1_textbased_adventure
             while (true)
             {
                 DisplayScene();
-                float choice = GetPlayerChoice();
-                UpdateScene(choice);
+                float playerChoice = GetPlayerChoice();
+                UpdateScene(playerChoice);
             }
         }
 
@@ -84,36 +98,48 @@ namespace e1_textbased_adventure
             story = storyInitializer.StoryInitialize();
         }
 
-
         void DisplayScene()
         {
             Console.Clear();
             foreach (char character in story[currentScene].Text)
             {
                 Dialog(character, "blue");
-                Thread.Sleep(60);
+                Thread.Sleep(30);
             }
+
+
             Console.WriteLine("\n ");
             int choiceIndex = 0;
 
             foreach (Choice choice in story[currentScene].Choices)
             {
                 choiceIndex++;
-                Console.WriteLine($"{choiceIndex}. {choice.Option}"); 
+                Console.WriteLine($"{choiceIndex}. {choice.Option}");
             }
         }
+
         float GetPlayerChoice()
         {
-            Console.Write("\nEnter your choice: ");
-            int choiceIndex;
+            bool makingChoice = true;
+            string choice = "";
+            int choiceIndex = 0;
 
-            while (!int.TryParse(Console.ReadLine(), out choiceIndex) || choiceIndex < 1 || choiceIndex > story[currentScene].Choices.Count)
+            while (true)
             {
-                Console.WriteLine("invalid input. Please enter a valid option.");
                 Console.Write("Enter your choice: ");
-            }
+                choice = Console.ReadLine().ToLower();
 
-            return story[currentScene].Choices[choiceIndex - 1].NextScene;
+                if (CommandList(choice))
+                {
+                    continue;
+                };
+           
+                if (int.TryParse(choice, out choiceIndex) && choiceIndex > 0 && choiceIndex <= story[currentScene].Choices.Count)
+                {
+                    return story[currentScene].Choices[choiceIndex - 1].NextScene; ;
+                }
+                Dialog("\n-=-\nInvalid Choice. Please pick enter a valid number\n-=-\n", "red");
+            }
         }
 
         void UpdateScene(float choice)
@@ -121,17 +147,14 @@ namespace e1_textbased_adventure
             if (choice >= 1.0f && choice <= 5.0f)
             {
                 currentScene = choice;
+                return;
             }
-            else
-            {
-                Console.WriteLine("Invalid choice. Please choose a valid option.");
-            }
+            Console.WriteLine("Invalid choice. Please choose a valid option.");
         }
 
-
-        public static void Dialog(string message, string colour)
+        public void Dialog(string message, string colour)
         {
-            if (colour== "red")
+            if (colour == "red")
             { Console.ForegroundColor = ConsoleColor.Red; }
             else if (colour == "green")
             { Console.ForegroundColor = ConsoleColor.Green; }
@@ -139,6 +162,8 @@ namespace e1_textbased_adventure
             { Console.ForegroundColor = ConsoleColor.Yellow; }
             else if (colour == "blue")
             { Console.ForegroundColor = ConsoleColor.DarkBlue; }
+            else if (colour == "cyan")
+            { Console.ForegroundColor = ConsoleColor.Cyan; }
             else
             { Console.ForegroundColor = ConsoleColor.White; }
 
@@ -146,9 +171,9 @@ namespace e1_textbased_adventure
             Console.ResetColor();
         }
 
-        public static void Dialog(char character, string colour)
+        public void Dialog(char character, string colour)
         {
-            if (colour== "red")
+            if (colour == "red")
             { Console.ForegroundColor = ConsoleColor.Red; }
             else if (colour == "green")
             { Console.ForegroundColor = ConsoleColor.Green; }
@@ -162,5 +187,71 @@ namespace e1_textbased_adventure
             Console.Write(character);
             Console.ResetColor();
         }
+
+        public void SaveGame()
+        {
+            StreamWriter file = new StreamWriter("save.txt");
+            file.WriteLine(currentScene);
+            file.Close();
+        }
+
+        public void LoadGame()
+        {
+            if (File.Exists("save.txt"))
+            {
+                float.TryParse(File.ReadAllText("save.txt"), out currentScene);
+                StartAdventure();
+                return;
+            }
+                StartGame();
+        }
+
+        public bool CommandList(string choice)
+        {
+            foreach (string command in commands)
+            {
+                if (choice == command)
+                {
+                    switch (choice)
+                    {
+                        case "help":
+                            GetInstructions();
+                            break;
+                        case "save-game":
+                            SaveCommand();
+                            break;
+                        default:
+                            Console.WriteLine("This is not a valid input. Please retry.");
+                            break;
+                    }
+                    return true;
+                }
+            }
+            return false;
+        }
+        public void GetInstructions()
+        {
+            Console.Clear();
+            Console.WriteLine("Instructions\n");
+            foreach (char character in story[currentScene].Instructions)
+            {
+                Dialog(character, "red");
+                Thread.Sleep(60);
+            }
+            Console.WriteLine("\n\nPress any key to continue.");
+            Console.ReadKey();
+            DisplayScene();
+        }
+
+        public void SaveCommand()
+        {
+            Console.Clear();
+            SaveGame();
+            Console.WriteLine("Save Complete. Press any key to continue.");
+            Console.ReadKey();
+            DisplayScene();
+        }
     }
+
+
 }

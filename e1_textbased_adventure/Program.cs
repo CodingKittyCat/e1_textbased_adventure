@@ -1,8 +1,4 @@
-﻿
-
-using System;
-using System.Drawing;
-using System.Runtime.CompilerServices;
+﻿using System;
 
 namespace e1_textbased_adventure
 {
@@ -10,10 +6,9 @@ namespace e1_textbased_adventure
     {
         static void Main()
         {
-            Game.StartGame();
+            Game gameInstance = new Game();
+            gameInstance.StartGame();
             Console.ReadKey();
         }
     }
 }
-
-
