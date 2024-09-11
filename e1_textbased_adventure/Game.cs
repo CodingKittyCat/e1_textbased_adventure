@@ -7,12 +7,14 @@ namespace e1_textbased_adventure
 {
     class Game
     {
+        // Variables
         List<string> commands = new List<string>();
         Dictionary<float, Scene> story = new Dictionary<float, Scene>();
 
         string characterName = "";
         float currentScene = 1.0f;
 
+        // Game Constructor
         public Game()
         {
             StoryInitialize();
@@ -20,6 +22,7 @@ namespace e1_textbased_adventure
             commands.Add("help");
         }
 
+        // Function executed at start of game. This is meant for the start menu.
         public void StartGame()
         {
             while(true)
@@ -37,6 +40,7 @@ namespace e1_textbased_adventure
             }
         }
 
+        // Naming character after starting the game.
         void NameCharacter()
         {
             while (true)
@@ -57,6 +61,7 @@ namespace e1_textbased_adventure
 
         }
 
+        // Function to get input from the startmenu.
         void MakeMenuChoice(string input)
         {
             if (input == "1")
@@ -72,7 +77,7 @@ namespace e1_textbased_adventure
             }
             else if (input == "3")
             {
-                Console.WriteLine("Creds");
+                Console.WriteLine("This program was written by Allison Buijk, class TTSDR-sd4o22a");
             }
             else if (input == "4")
             {
@@ -82,6 +87,7 @@ namespace e1_textbased_adventure
             }
         }
 
+        // Starts the game
         public void StartAdventure()
         {
             while (true)
@@ -92,19 +98,21 @@ namespace e1_textbased_adventure
             }
         }
 
+        // Creates an instance of InitializeStory, which contains a dictionaries of all the story cases
         private void StoryInitialize()
         {
             InitializeStory storyInitializer = new InitializeStory();
             story = storyInitializer.StoryInitialize();
         }
 
+        // Displays the scene (current story segment)
         void DisplayScene()
         {
             Console.Clear();
             foreach (char character in story[currentScene].Text)
             {
                 Dialog(character, "blue");
-                Thread.Sleep(30);
+                Thread.Sleep(15);
             }
 
 
@@ -118,6 +126,7 @@ namespace e1_textbased_adventure
             }
         }
 
+        // Gets the choice from the current scene and moves on to the next scene if the choice is valid.
         float GetPlayerChoice()
         {
             bool makingChoice = true;
@@ -142,8 +151,15 @@ namespace e1_textbased_adventure
             }
         }
 
+        // Updates the scene (story segment) to the next one, according to player choice
         void UpdateScene(float choice)
         {
+            if (choice == 2.1f)
+            {
+                Console.Clear();
+                SaveGame();
+                StartGame();
+            }
             if (choice >= 1.0f && choice <= 5.0f)
             {
                 currentScene = choice;
@@ -152,6 +168,7 @@ namespace e1_textbased_adventure
             Console.WriteLine("Invalid choice. Please choose a valid option.");
         }
 
+        // Similar to Console.WriteLine. Makes different colours available for dialogs
         public void Dialog(string message, string colour)
         {
             if (colour == "red")
@@ -171,6 +188,7 @@ namespace e1_textbased_adventure
             Console.ResetColor();
         }
 
+        // Similar to Console.Write. Makes different colours available for dialogs
         public void Dialog(char character, string colour)
         {
             if (colour == "red")
@@ -188,6 +206,7 @@ namespace e1_textbased_adventure
             Console.ResetColor();
         }
 
+        // Saves current scene to a text file
         public void SaveGame()
         {
             StreamWriter file = new StreamWriter("save.txt");
@@ -195,6 +214,7 @@ namespace e1_textbased_adventure
             file.Close();
         }
 
+        // Loads current scene to the game from a text file
         public void LoadGame()
         {
             if (File.Exists("save.txt"))
@@ -206,6 +226,7 @@ namespace e1_textbased_adventure
                 StartGame();
         }
 
+        // Executes a command such as help or save-game
         public bool CommandList(string choice)
         {
             foreach (string command in commands)
@@ -229,6 +250,8 @@ namespace e1_textbased_adventure
             }
             return false;
         }
+
+        // Shows instructions to current scene.
         public void GetInstructions()
         {
             Console.Clear();
@@ -236,13 +259,14 @@ namespace e1_textbased_adventure
             foreach (char character in story[currentScene].Instructions)
             {
                 Dialog(character, "red");
-                Thread.Sleep(60);
+                Thread.Sleep(15);
             }
             Console.WriteLine("\n\nPress any key to continue.");
             Console.ReadKey();
             DisplayScene();
         }
 
+        // Command that saves the game.
         public void SaveCommand()
         {
             Console.Clear();
