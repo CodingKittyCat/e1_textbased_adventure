@@ -7,7 +7,7 @@ namespace e1_textbased_adventure
 {
     class Game
     {
-        // Variables
+        // Create Variables
         List<string> commands = new List<string>();
         Dictionary<float, Scene> story = new Dictionary<float, Scene>();
 

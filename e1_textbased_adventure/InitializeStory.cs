@@ -208,7 +208,7 @@ namespace e1_textbased_adventure
 
                 new List<Choice>
                 {
-                    new Choice("Return to the main menu. and save your game.", 2.1f)
+                    new Choice("Return to the main menu.", 2.1f)
                 }
                 ,
                 "No Instructions."
